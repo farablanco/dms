@@ -1,7 +1,7 @@
 // TODO:1. Create barebone Web app server
 // TODO:2. Set up client directory to serve static files
 // TODO:3. Handle errors
-// TODO:4. Post request
+// TODO:4. Parse registration information sent from client
 
 
 // TODO: 1.1 Load the Express module
@@ -12,7 +12,7 @@ var express = require("express");
 // Loads path to access helper functions for working with files and directory paths
 var path = require("path");
 
-//TODO: 4.1 Load the body parser module
+// TODO: 4.1 Load the body parser module
 // Loads bodyParser to populate and parse the body property of the request object
 var bodyParser = require("body-parser");
 
@@ -25,11 +25,11 @@ var app = express();
 // Value of NODE_PORT is taken from the user environment if defined; port 3000 is used otherwise.
 const NODE_PORT = process.env.NODE_PORT || 3000;
 
-// TODO: 2.2a Define CLIENT_FOLDER as a constant and assign the client folder's path to it.
+// TODO: 2.2 Define CLIENT_FOLDER as a constant and assign the client folder's path to it.
 // Defines paths
 // __dirname is a global that holds the directory name of the current module
 const CLIENT_FOLDER = path.join(__dirname + '/../client');  // CLIENT FOLDER is the public directory
-//TODO: 2.2b  Assign path to the messages folder to the constant MSG_FOLDER
+// TODO: 3.1  Assign path to the messages folder to the constant MSG_FOLDER
 const MSG_FOLDER = path.join(CLIENT_FOLDER + '/assets/messages');
 
 
@@ -39,22 +39,28 @@ const MSG_FOLDER = path.join(CLIENT_FOLDER + '/assets/messages');
 // if you have not defined a handler for "/" before this line, server will look for index.html in CLIENT_FOLDER
 app.use(express.static(CLIENT_FOLDER));
 
-//TODO:4.2 Create a middleware that parses urlencoded bodies
+// TODO:4.2 Create a middleware that parses urlencoded bodies
 // Populates req.body with information submitted through the registration form.
 // Expected content type is application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: false}));
 
-//TODO:4.3 Post request to the page
+// TODO:4.3 Define /register route handler
 // Defines endpoint exposed to client side for registration
 app.post("/register", function (req, res, next) {
+    // TODO: 4.4 Print information sent from client.
+    // Information sent via an HTTP POST is found in req.body
     console.log('\nData Submitted');
     console.log('Dept No: ' + req.body.deptNo);
     console.log('Dept Name: ' + req.body.deptname);
+
+    // TODO: 4.5 Send Thank You page
+    // res.send responds with a thank you page to client. This property also ends the req/res cycle.
+    // res.status sets the status code sent to client.
     res.status(200).sendFile(path.join(CLIENT_FOLDER + "/thanks.html"));
 });
 
 
-// TODO: 3.1 Handle 404 errors (missing resources)
+// TODO: 3.2 Handle 404 errors (missing resources)
 // Handles 404. In Express, 404 responses are not the result of an error, 
 // so the error-handler middleware will not capture them.
 // To handle a 404 response, add a middleware function at the very bottom of the stack
@@ -63,7 +69,7 @@ app.use(function (req, res) {
     res.status(404).sendFile(path.join(MSG_FOLDER + "/404.html"));
 });
 
-// TODO: 3.2 Handle server errors (50*s)
+// TODO: 3.3 Handle server errors (50*s)
 // Error handler: server error
 app.use(function (err, req, res, next) {
     res.status(501).sendFile(path.join(MSG_FOLDER + '/501.html'));
