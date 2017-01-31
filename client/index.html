@@ -1,26 +1,31 @@
-<!-- TODO: 1. Load necessary stylesheets and js files -->
-<!-- TODO: 2. Add a navigation bar -->
-<!-- TODO: 3. Add a registration form -->
-<!-- TODO: 4. Submit form to server using HTTP POST -->
+<!--TODO: Convert app to an AngularJS app -->
+<!--TODO: 3. Load the necessary js files (both 3rd party and your own)-->
+<!--TODO: 4. Designate your app's root element -->
+<!--TODO: 5. Attach the controller to the registration form -->
+<!--TODO: 7. Apply two-way data-binding to the registration form fields so that view is automatically synced to the -->
+<!--TODO: 7. data model defined in your controller-->
+<!--TODO: 8. Call the ctrl.register function when the Register button is clicked-->
 <!DOCTYPE html>
-<html lang="en" >
+<!-- TODO: 4.1 Designate <html> as the app's root element -->
+<!-- By using the ng-app directive, <html> is designated as the root element of the -->
+<!-- AngularJS application (in this case, the DMS module) -->
+<html lang="en" ng-app="DMS">
 <head>
     <meta charset="utf-8">
     <title>Department Management System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- TODO: 1.1 Load bootstrap stylesheet  -->
     <!-- Bootstrap core CSS, must be enabled for program to work -->
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
 <body>
 
-<!--  TODO: 2.1 Set classes for navigation bar -->
+<!-- Sets navigation bar classes -->
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-            <!-- TODO: 2.2 Define the button for navigation bar -->
+            <!-- Defines navigation bar button -->
             <button type="button" class="navbar-toggle collapsed"
                     data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
                     aria-expanded="false">
@@ -32,7 +37,7 @@
             <a class="navbar-brand" href="#">DMS</a>
         </div>
 
-        <!-- TODO: 2.3 Collect the nav links, forms, and other content for toggling -->
+        <!-- Collects nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li class="nav-item active">
@@ -42,37 +47,52 @@
     </div><!-- /.container-fluid -->
 </nav>
 
-
-<div class="container">
+<!--TODO 5.1 Attach controller-->
+<!--The ng-controller directive tells Angular the scope of the controller-->
+<!--In this case, the RegCtrl is given the scope of the <div> element where it is called-->
+<!--We then use RegCtrl (as ctrl) to manipulate elements within this <div>-->
+<div class="container" ng-controller="RegCtrl as ctrl">
     <div class="page-header">
         <h1>Department Management System <small>Registration</small></h1>
     </div>
     <br/>
-    <!-- TODO: 3.1 Create Input Form and fields -->
-    <!-- The <form> method attribute specifies the HTTP method used. In this case, it's POST -->
-    <!-- The <form> action attribute specifies the URI where form information is sent and processed -->
-    <form name="regForm"  method="post" action="/register" autocomplete="off">
+
+    <!--TODO: 8.1a Replace the <form> method and action attributes with the ng-submit directive-->
+    <!--TODO: 8.1b Call the ctrl.register function when the Register button is clicked or ENTER is pressed-->
+    <!-- Creates Input Form and fields -->
+    <!--The ng-submit directive specifies the function called when the Register button is clicked or ENTER is pressed-->
+    <form name="regForm"  ng-submit="ctrl.register()" autocomplete="off">
 
         <div class="form-group">
 
             <label for="deptNo">Department No:</label>
 
+            <!--TODO: 7.1 Bind the department number to ctrl.department.id -->
+            <!--Using the ng-model directive, we perform a 2-way data binding between the department input field and-->
+            <!--the ctrl.department.id data model. By doing so, we automatically sync the view data and the data model data -->
             <input type="number" id="deptNo" name="deptNo"
-                   class="form-control" required>
+                   class="form-control"
+                   ng-model="ctrl.department.id"
+                   required>
 
         </div>
 
         <div class="form-group">
 
-            <label for="deptname">Department name:</label>
+            <label for="deptName">Department name:</label>
 
-            <input type="text" id="deptname" name="deptname"
-                   class="form-control"  required>
+            <!--TODO: 7.2 Bind the department name to ctrl.department.name -->
+            <!--Using the ng-model directive, we perform a 2-way databinding between the department input field and-->
+            <!--the ctrl.department.id data model. This automatically syncs the view data and the data model data -->
+            <input type="text" id="deptName" name="deptName"
+                   class="form-control"
+                   ng-model="ctrl.department.name"
+                   required>
 
         </div>
 
 
-        <!-- TODO: 4.1 Create button used to submit data -->
+        <!-- Creates button used to submit data -->
         <div class="form-group">
             <!-- The <button> type attribute specifies the behavior of the button -->
             <!-- A button with type=submit submits form data to the server -->
@@ -85,11 +105,21 @@
     </form>
 </div>
 
-<!-- TODO: 1.2 Load jquery and boostrap js files  -->
-<!-- Bootstrap core JavaScript: Placed at the end of the document so the pages load faster -->
+<!-- Loads dependencies: Placed at the end of the document so the pages load faster -->
 <!-- bootstrap uses jquery and needs to be loaded even if we don't use directly in our app. -->
 <!-- jquery should always be loaded before bootstrap -->
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
 <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<!--TODO: 3.1 Load angular-->
+<script src="bower_components/angular/angular.min.js"></script>
+
+<!--Load app's custom JS files-->
+<!--TODO: 3.2 Load the js file that defines the DMS module-->
+<!--Loads the js file that contains the DMS module definition-->
+<script src="app/app.js"></script>
+<!--TODO: 3.3 Load the js file that defines the RegCtrl controller-->
+<!--Loads the js file that contains the RegCtrl controller definition-->
+<script src="app/registration/register.controller.js"></script>
+
 </body>
 </html>
