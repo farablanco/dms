@@ -1,5 +1,3 @@
-// TODO: Add validation to form
-
 // Always use an IIFE, i.e., (function() {})();
 (function () {
     angular
@@ -9,7 +7,7 @@
                                             // specified as you can see, angular methods are chainable
 
 
-    // Dependency injection. [] means RegCtrl does not have dependencies
+    // Dependency injection. An empty [] means RegCtrl does not have dependencies
     RegCtrl.$inject = [];
 
     // RegCtrl function declaration
@@ -17,27 +15,25 @@
     function RegCtrl() {
 
         // Declares the var vm (for ViewModel) and assigns it the object this (in this case, the RegCtrl)
-        // Any function or variable that you attach to vm will be exposed to callers of RegCtrl, e.g., index.html
+        // Any function or variable that you attach to vm will be exposed to callers of RegCtrl, e.g., register.html
         var vm = this;
 
 
-        // Exposed data models
-
-        // Creates a department object that
-        // We expose the department object by attaching it to the vm
-        // This will allow us apply two-way data-binding to this object by using ng-model in our view (i.e., index.html)
+        // Exposed data models -----------------------------------------------------------------------------------------
+        // Creates a department object. We expose the department object by attaching it to the vm. This will allow us
+        // apply two-way data-binding to this object by using ng-model in our view (i.e., index.html)
         vm.department = {
             id: "",
             name: ""
         };
 
-        // Exposed functions
-        // Exposed functions can be called from the view. e.g., to call the vm.register from our view (index.html),
+        // Exposed functions -------------------------------------------------------------------------------------------
+        // Exposed functions can be called from the view. e.g., to call the vm.register from our view (register.html),
         // code: ctrl.register()
         vm.register = register;
 
 
-        // Function declaration and definition
+        // Function declaration and definition -------------------------------------------------------------------------
         function register() {
             // Calls alert box and displays registration information
             alert("The registration information you sent are \n" + JSON.stringify(vm.department));

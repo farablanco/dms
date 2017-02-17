@@ -1,16 +1,27 @@
-<!--TODO: 1. Add Angular validation to form-->
+<!--TODO: Create a search page that displays dummy data (list of departments) and allows users to search -->
+<!--TODO: (using filter) these data-->
+<!--TODO: 1. Make the index page a container page that calls HTML fragments through ng-include-->
+<!--TODO: 2. Create a register.html file in the registration folder and move all registration-related HTMLs to this
+file-->
+<!--TODO: 9. Load JS file containing SearchCtrl code-->
+<!--TODO: 11. Load ng-animate JS file and custom CSS file for animation-->
 
 <!DOCTYPE html>
-<!-- By using the ng-app directive, <html> is designated as the root element of the -->
-<!-- AngularJS application (in this case, the DMS module) -->
+<!-- By using the ng-app directive, <html> is designated as the root element of the AngularJS application (in this
+case, the DMS module) -->
 <html lang="en" ng-app="DMS">
 <head>
     <meta charset="utf-8">
     <title>Department Management System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--CSS files ----------------------------------------------------------------------------------------------------->
+    <!--3rd Party CSS ------------------------------------------------------------------------------------------------->
     <!-- Bootstrap core CSS, must be enabled for program to work -->
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <!--Custom CSS ---------------------------------------------------------------------------------------------------->
+    <!--TODO: 11.1 Load custom CSS file for animation-->
+    <link rel="stylesheet" href="assets/css/animate.css">
 </head>
 <body>
 
@@ -35,113 +46,53 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li class="nav-item active">
-                    <a href="#">Registration <span class="sr-only">(current)</span></a></li>
+                    <a href="#register" data-toggle="tab">Registration <span class="sr-only">(current)</span></a>
+                </li>
+                <!--TODO: 1.1 Add search page to the navbar-->
+                <li class="nav-item">
+                    <a href="#search" data-toggle="tab">Search<span class="sr-only">(search)</span></a>
+                </li>
             </ul>
+
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
 
-
-<!--The ng-controller directive tells Angular the scope of the controller-->
-<!--In this case, the RegCtrl is given the scope of the <div> element where it is called-->
-<!--We then use RegCtrl (as ctrl) to manipulate elements within this <div>-->
-<div class="container" ng-controller="RegCtrl as ctrl">
-    <div class="page-header">
-        <h1>Department Management System
-            <small>Registration</small>
-        </h1>
+<!--TODO: 1.2 Create tab panes where the register and search html partials would be shown -->
+<!--TODO: 2.1 Move registration form (as an html fragment) to its own html file (in our case,
+app/registration/register.html) -->
+<!-- Tab panes -->
+<div class="container tab-content">
+    <div class="tab-pane fade in active" id="register">
+        <ng-include src="'/app/registration/register.html'"></ng-include>
     </div>
-    <br/>
-
-
-    <!-- Creates Input Form and fields -->
-    <!--The ng-submit directive specifies the function called when the Register button is clicked or ENTER is pressed-->
-    <!--TODO: 1.1 Turn off automatic HTML 5 validation on submission-->
-    <!--novalidate is an HTML5 boolean property that tells HTML5 to ignore validation constraints (i.e., do not perform validation) when form is submitted-->
-    <form name="regForm" novalidate ng-submit="ctrl.register()" autocomplete="off">
-
-
-        <div class="form-group">
-
-            <label for="deptNo">Department No:</label>
-            <!--Using the ng-model directive, we perform a 2-way data binding between the department input field and-->
-            <!--The ctrl.department.id data model. By doing so, we automatically sync the view data and the data
-            model data -->
-
-            <!--The required property tells HTML5 that the input field is mandatory-->
-            <!--type="number" specifies that a numerical value is expected-->
-            <input type="number" id="deptNo" name="deptNo"
-                   class="form-control"
-                   ng-model="ctrl.department.id"
-                   required>
-
-            <!--TODO: 1.2 Prompt user to enter department number if not given-->
-            <!--The $invalid is a boolean that specifies whether a form or field is invalid based on rules specified-->
-            <!--In the case of the deptNo field, it is an invalid state if value entered is non-numeric or a value
-            has not been entered at all-->
-            <!--The ng-show directive hides or shows the given HTML element based on the value of the expression it
-            is evaluating -->
-            <!--$touched is a boolean that indicates whether or not field has been touched (visited) $invalid
-            indicates whether or not the value of the field is invalid -->
-            <span class="help-block" ng-show="regForm.deptNo.$touched && regForm.deptNo.$invalid">
-                Please enter department number.
-            </span>
-        </div>
-
-        <div class="form-group">
-            <label for="deptName">Department name:</label>
-
-            <!--Using the ng-model directive, we perform a 2-way data binding between the department input field and-->
-            <!--the ctrl.department.id data model. This automatically syncs the view data and the data model data -->
-
-            <!--type="text" specifies that an alphanumeric value is expected-->
-            <input type="text" id="deptName" name="deptName"
-                   class="form-control"
-                   ng-model="ctrl.department.name"
-                   required>
-
-            <!--TODO: 1.3 Prompt user to enter department name if not given-->
-            <!--$touched is a boolean that indicates whether or not field has been touched (visited) $invalid
-            indicates whether or not the value of the field is invalid -->
-            <span class="help-block" ng-show="regForm.deptName.$touched && regForm.deptName.$invalid">
-                Please enter department Name.</span>
-
-        </div>
-
-
-        <!-- Creates button used to submit data -->
-        <div class="form-group">
-
-
-            <!-- The <button> type attribute specifies the behavior of the button -->
-            <!-- A button with type=submit submits form data to the server -->
-            <!--TODO: 1.4 Enable button only when form (i.e. all fields in form) is valid-->
-            <!--The ng-disabled directive specifies whether to enable or disable an HTML element based on the value
-            of the expression it's evaluating-->
-            <button type="submit"
-                    class="btn-success form-control"
-                    ng-disabled="regForm.$invalid">
-                Register
-            </button>
-
-        </div>
-
-    </form>
+    <div class="tab-pane fade" id="search">
+        <ng-include src="'/app/search/search.html'"></ng-include>
+    </div>
 </div>
 
-<!-- Loads dependencies: Placed at the end of the document so the pages load faster -->
+
+<!-- JS FILES---Placed at the end of the document so the pages load faster ---------------------------------------->
+<!--3rd Party Dependencies ---------------------------------------------------------------------------------------->
 <!-- bootstrap uses jquery and needs to be loaded even if we don't use directly in our app. -->
 <!-- jquery should always be loaded before bootstrap -->
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
 <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- Load angularjs files-->
 <script src="bower_components/angular/angular.min.js"></script>
+<!--Load angular-messages AFTER Angular-->
+<script src="bower_components/angular-messages/angular-messages.min.js"></script>
+<!--TODO: 11.2 Load angular-animate's JS file-->
+<!--Load angular-animate-->
+<script src="bower_components/angular-animate/angular-animate.min.js"></script>
 
-<!--Load app's custom JS files-->
+<!--Custom Scripts ------------------------------------------------------------------------------------------------>
 <!--Loads the js file that contains the DMS module definition-->
 <script src="app/app.js"></script>
 <!--Loads the js file that contains the RegCtrl controller definition-->
 <script src="app/registration/register.controller.js"></script>
+<!--TODO: 9.1 Load search controller JS file-->
+<!--Loads the js file that contains the SearchCtrl controller definition-->
+<script src="app/search/search.controller.js"></script>
 
 </body>
 </html>
