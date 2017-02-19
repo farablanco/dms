@@ -1,4 +1,4 @@
-/*TODO: 11.3 Define animation styles--transitions, keyframes, etc*/
+/* START - Search table animation ------------------------------------------------------------------------------------*/
 .animation {
     -webkit-transition: 0.5s;
 }
@@ -18,3 +18,4 @@
 .animation.ng-leave.ng-leave-active {
     opacity: 0;
 }
+/* END - Search table animation --------------------------------------------------------------------------------------*/

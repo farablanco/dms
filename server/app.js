@@ -1,3 +1,6 @@
+// TODO: Send and retrieve information from server via Angular $http
+// TODO: 4. Update handling of /register to match client-side changes
+// TODO: 5. In register (departments) handler, return a status instead of a thank you page.
 // Loads express module and assigns it to a var called express
 var express = require("express");
 
@@ -25,20 +28,34 @@ const MSG_FOLDER = path.join(CLIENT_FOLDER + '/assets/messages');
 // if you have not defined a handler for "/" before this line, server will look for index.html in CLIENT_FOLDER
 app.use(express.static(CLIENT_FOLDER));
 
+
+// TODO: 4.1 Update the body parser type to match the data format sent through $http
+// TODO: 4.1a Instead of deleting bodyParser.urlencoded comment it out so you could refer to in the future
 // Populates req.body with information submitted through the registration form.
 // Expected content type is application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({extended: false}));
+//app.use(bodyParser.urlencoded({extended: false}));
+// Default $http content type is application/json so we use json as the parser type
+app.use(bodyParser.json());
 
+
+// TODO: 4.2 Update register route to route used by client app
 // Defines endpoint exposed to client side for registration
-app.post("/register", function (req, res, next) {
+app.post("/departments", function (req, res, next) {
+    // TODO: 4.3 client-side has changed the data structure sent to server, reflect that change here
     // Information sent via an HTTP POST is found in req.body
     console.log('\nData Submitted');
-    console.log('Dept No: ' + req.body.deptNo);
-    console.log('Dept Name: ' + req.body.deptname);
+    console.log('Dept No: ' + req.body.dept.id);
+    console.log('Dept Name: ' + req.body.dept.name);
 
-    // res.send responds with a thank you page to client. This property also ends the req/res cycle.
+    // TODO: 5.1 Send a 200 status instead of a thank you page
+    // TODO: 5.1a Instead of deleting serving of thanks.html, comment it out so you could refer to in the future
+    // res.sendFile responds with a thank you page to client. This property also ends the req/res cycle.
     // res.status sets the status code sent to client.
-    res.status(200).sendFile(path.join(CLIENT_FOLDER + "/thanks.html"));
+    // res.status(200).sendFile(path.join(CLIENT_FOLDER + "/thanks.html"));
+
+    // res.status sets the status code sent back to client. Append end() to this chain to end the HTTP req/res cycle.
+    // Failure to do so would cause your app to hang
+     res.status(200).end();
 });
 
 

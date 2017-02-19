@@ -1,13 +1,7 @@
-<!--TODO: Create a search page which displays dummy data (list of departments) and allows users to search -->
-<!--TODO: (using filter) these data-->
-<!--TODO: 4. Build search view (HTML/CSS). Include area to enter search string and area to display search results-->
-<!--TODO: 7. Add your controller to this view/html-->
-<!--TODO: 8. Use necessary angular directives to display array of objects defined in search.controller.js-->
-<!--TODO: 12. Add filtering and animation-->
+<!--TODO: Send and retrieve information from server via Angular $http; modularize via services-->
 <!--The ng-controller directive tells Angular the scope of the controller. In this case, the SearchCtrl is given
-the scope of the <div> element where it is called. We then use SearcCtrl (as ctrl) to manipulate elements within
+the scope of the <div> element where it is called. We then use SearchCtrl (as ctrl) to manipulate elements within
 this <div>-->
-<!--TODO: 7.1 Attach controller to this outermost <div>-->
 <div ng-controller="SearchCtrl as ctrl">
     <div class="page-header">
         <h1>Department Management System
@@ -17,7 +11,6 @@ this <div>-->
     <br/>
 
     <!--Search UI-->
-    <!--TODO: 4.1 Create the input field for user to enter search string -->
     <!-- Creates Input Form and fields for uesr to enter search string -->
     <form name="queryForm" class="form-inline">
         <div class="form-group">
@@ -29,7 +22,6 @@ this <div>-->
         </div>
     </form>
     <hr>
-    <!--TODO: 4.2 Create the area (in our case table) to display search result (department details)-->
     <!-- Creates area to display search result-->
     <table class="table table-striped">
         <thead>
@@ -39,8 +31,6 @@ this <div>-->
         </tr>
         </thead>
         <tbody>
-        <!--TODO: 8.1 Display contents of vm.departmnets-->
-        <!--TODO: 12.1 Use contents of ctrl.queryString to filter what to display-->
         <!--ng-repeat directive repeats an HTML element a number of times. The syntax ng-repeat = "x in y" allows us
         to iterate through an array or object. In the case below, we are iterating through the contents of the array
         of objects ctrl.departments, dept is assigned an instance (i.e, an object) of the array-->

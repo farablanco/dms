@@ -1,6 +1,3 @@
-<!--TODO: Create a search page which displays dummy data (list of departments) and allows users to search -->
-<!--TODO: (using filter) these data-->
-<!--TODO: 10. Install and inject ngAnimate-->
 // Always use an IIFE, i.e., (function() {})();
 (function () {
     // Creates a new module

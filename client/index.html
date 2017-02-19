@@ -1,11 +1,5 @@
-<!--TODO: Create a search page that displays dummy data (list of departments) and allows users to search -->
-<!--TODO: (using filter) these data-->
-<!--TODO: 1. Make the index page a container page that calls HTML fragments through ng-include-->
-<!--TODO: 2. Create a register.html file in the registration folder and move all registration-related HTMLs to this
-file-->
-<!--TODO: 9. Load JS file containing SearchCtrl code-->
-<!--TODO: 11. Load ng-animate JS file and custom CSS file for animation-->
-
+<!--TODO: Send and retrieve information from server via Angular $http; modularize via services-->
+<!--TODO: 1a Load DeptServices -->
 <!DOCTYPE html>
 <!-- By using the ng-app directive, <html> is designated as the root element of the AngularJS application (in this
 case, the DMS module) -->
@@ -20,7 +14,6 @@ case, the DMS module) -->
     <!-- Bootstrap core CSS, must be enabled for program to work -->
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <!--Custom CSS ---------------------------------------------------------------------------------------------------->
-    <!--TODO: 11.1 Load custom CSS file for animation-->
     <link rel="stylesheet" href="assets/css/animate.css">
 </head>
 <body>
@@ -48,7 +41,6 @@ case, the DMS module) -->
                 <li class="nav-item active">
                     <a href="#register" data-toggle="tab">Registration <span class="sr-only">(current)</span></a>
                 </li>
-                <!--TODO: 1.1 Add search page to the navbar-->
                 <li class="nav-item">
                     <a href="#search" data-toggle="tab">Search<span class="sr-only">(search)</span></a>
                 </li>
@@ -58,9 +50,6 @@ case, the DMS module) -->
     </div><!-- /.container-fluid -->
 </nav>
 
-<!--TODO: 1.2 Create tab panes where the register and search html partials would be shown -->
-<!--TODO: 2.1 Move registration form (as an html fragment) to its own html file (in our case,
-app/registration/register.html) -->
 <!-- Tab panes -->
 <div class="container tab-content">
     <div class="tab-pane fade in active" id="register">
@@ -81,16 +70,17 @@ app/registration/register.html) -->
 <script src="bower_components/angular/angular.min.js"></script>
 <!--Load angular-messages AFTER Angular-->
 <script src="bower_components/angular-messages/angular-messages.min.js"></script>
-<!--TODO: 11.2 Load angular-animate's JS file-->
 <!--Load angular-animate-->
 <script src="bower_components/angular-animate/angular-animate.min.js"></script>
 
 <!--Custom Scripts ------------------------------------------------------------------------------------------------>
 <!--Loads the js file that contains the DMS module definition-->
 <script src="app/app.js"></script>
+<!--TODO: 1a.1 Load DeptServices -->
+<!--Loads the js file that contains the SearchCtrl controller definition-->
+<script src="app/services/department.services.js"></script>
 <!--Loads the js file that contains the RegCtrl controller definition-->
 <script src="app/registration/register.controller.js"></script>
-<!--TODO: 9.1 Load search controller JS file-->
 <!--Loads the js file that contains the SearchCtrl controller definition-->
 <script src="app/search/search.controller.js"></script>
 
