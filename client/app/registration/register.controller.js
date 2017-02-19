@@ -38,9 +38,9 @@
             name: ""
         };
 
-        // Exposed functions ---------------------------------------
-        // ---------------------------------------------------- Exposed functions can be called from the view. e.g., to
-        // call the vm.register from our view (register.html), code: ctrl.register()
+        // Exposed functions ----------------------------------------------------------------------------------------
+        // Exposed functions can be called from the view. e.g., to call the vm.register from our view (register.html),
+        // code: ctrl.register()
         vm.register = register;
 
 

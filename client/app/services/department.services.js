@@ -5,6 +5,8 @@
 // TODO: 3a Name the function insertDept
 // TODO: 3b Return promise object to calling controller
 // TODO: 3c Expose this function.
+// TODO: 11 Create a function called getDeptAll that retrieves all dept information from server using HTTP GET.
+// TODO: 11 This function returns a promise object.
 
 
 // TODO: 1.1 Create an IIFE then call your angular module and attach your service to it. Name the service DeptService
@@ -36,13 +38,15 @@
         // Exposed functions -------------------------------------------------------------------------------------------
         // TODO: 3.3 Expose insertDept
         service.insertDept = insertDept;
+        // TODO: 11.2 Expose retrieveDept. Arrange in alphabetical order
+        service.retrieveDept = retrieveDept;
 
         // Function declaration and definition -------------------------------------------------------------------------
+
         // TODO: 3.1 Declare insertDept; insertDept must be a private function; insertDept accepts department
         // TODO: 3.1  information and returns a promise object to the calling function
-
-        // insertDept accepts department information and uses HTTP POST to send this information to the server's
-        // /departments route
+        // insertDept uses HTTP POST to send department information to the server's /departments route
+        // Parameters: department information; Returns: Promise object
         function insertDept(department) {
             // TODO: 3.2 Return the $http promise object to calling function
             // This line returns the $http to the calling function
@@ -55,5 +59,18 @@
                 , data: {dept: department}
             });
         }
+
+
+        // TODO: 11.1 Declare retrieveDept; retrieveDept must be a private function; retrieveDept retrieves all dept data
+        // TODO: 11.1 from server and returns a promise object
+        // retrieveDept retrieves department information from the server via HTTP GET.
+        // Parameters: none. Returns: Promise object
+        function retrieveDept(){
+            return $http({
+                method: 'GET'
+                , url: 'departments'
+            });
+        }
+
     }
 })();
