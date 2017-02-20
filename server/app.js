@@ -1,9 +1,10 @@
-// TODO: Send and retrieve information from server via Angular $http
-// TODO: 4. Update handling of /register to match client-side changes
-// TODO: 5. In register (departments) handler, return a status instead of a thank you page.
-// TODO: 10. Define route that handles GET /departments (request from getAllDept)
-// TODO: 10a. Move vm.departments content from search.controller.js to here
+// TODO: Insert and retrieve data to / from MySQL DB
+// TODO: 1. Install and load sequelize
+// TODO: 2. Set up MySQL connection
+// TODO: 3. Define models and load models
+// TODO: 4. Persist registration information
 
+// DEPENDENCIES ------------------------------------------------------------------------------------------------------
 // Loads express module and assigns it to a var called express
 var express = require("express");
 
@@ -13,17 +14,49 @@ var path = require("path");
 // Loads bodyParser to populate and parse the body property of the request object
 var bodyParser = require("body-parser");
 
-// Creates an instance of express called app
-var app = express();
+// TODO: 1.1 Load sequelize, assign it to a variable called Sequelize
+// Loads sequelize ORM
+var Sequelize = require("sequelize");
 
+// CONSTANTS ---------------------------------------------------------------------------------------------------------
 // Defines server port.
 // Value of NODE_PORT is taken from the user environment if defined; port 3000 is used otherwise.
-const NODE_PORT = process.env.NODE_PORT || 3000;
+const NODE_PORT = process.env.NODE_PORT || 8080;
 
 // Defines paths
 // __dirname is a global that holds the directory name of the current module
 const CLIENT_FOLDER = path.join(__dirname + '/../client');  // CLIENT FOLDER is the public directory
 const MSG_FOLDER = path.join(CLIENT_FOLDER + '/assets/messages');
+
+// TODO: 2.1 Define MYSQL constants
+// Defines MySQL configuration
+const MYSQL_USERNAME = 'root';
+const MYSQL_PASSWORD = 'root';
+
+// OTHER VARS ---------------------------------------------------------------------------------------------------------
+// Creates an instance of express called app
+var app = express();
+
+//TODO :2.2 Create a connection with mysql DB
+// Creates a MySQL connection
+var sequelize = new Sequelize(
+    'employees',
+    MYSQL_USERNAME,
+    MYSQL_PASSWORD,
+    {
+        host: 'localhost',         // default port    : 3306
+        logging: console.log,
+        dialect: 'mysql',
+        pool: {
+            max: 5,
+            min: 0,
+            idle: 10000
+        }
+    }
+);
+
+//TODO :3.2 Load Department model
+var Department = require('./models/department')(sequelize, Sequelize);
 
 
 // Serves files from public directory (in this case CLIENT_FOLDER).
@@ -32,8 +65,6 @@ const MSG_FOLDER = path.join(CLIENT_FOLDER + '/assets/messages');
 app.use(express.static(CLIENT_FOLDER));
 
 
-// TODO: 4.1 Update the body parser type to match the data format sent through $http
-// TODO: 4.1a Instead of deleting bodyParser.urlencoded comment it out so you could refer to in the future
 // Populates req.body with information submitted through the registration form.
 // Expected content type is application/x-www-form-urlencoded
 //app.use(bodyParser.urlencoded({extended: false}));
@@ -41,31 +72,37 @@ app.use(express.static(CLIENT_FOLDER));
 app.use(bodyParser.json());
 
 
-// TODO: 4.2 Update register route to route used by client app
 // Defines endpoint exposed to client side for registration
 app.post("/departments", function (req, res) {
-    // TODO: 4.3 client-side has changed the data structure sent to server, reflect that change here
     // Information sent via an HTTP POST is found in req.body
     console.log('\nData Submitted');
     console.log('Dept No: ' + req.body.dept.id);
     console.log('Dept Name: ' + req.body.dept.name);
 
-    // TODO: 5.1 Send a 200 status instead of a thank you page
-    // TODO: 5.1a Instead of deleting serving of thanks.html, comment it out so you could refer to in the future
-    // res.sendFile responds with a thank you page to client. This property also ends the req/res cycle.
-    // res.status sets the status code sent to client.
-    // res.status(200).sendFile(path.join(CLIENT_FOLDER + "/thanks.html"));
-
-    // res.status sets the status code sent back to client. Append end() to this chain to end the HTTP req/res cycle.
-    // Failure to do so would cause your app to hang
-    res.status(200).end();
+    // TODO: 4.1 Persist registration information
+    Department
+        .create({
+            dept_no: req.body.dept.id,
+            dept_name: req.body.dept.name
+        })
+        .then(function (department) {
+            console.log(department.get({plain: true}));
+            res
+                .status(200)
+                .json(department);
+        })
+        .catch(function (err) {
+            console.log("error: " + err);
+            res
+                .status(500)
+                .json(err);
+        });
 });
 
-// TODO: 10.1 Create the HTTP GET /departments handler
+
 // Defines endpoint exposed to client side for retrieving all department information
 app.get("/departments", function (req, res) {
 
-    // TODO: 10.2 Move contents of vm.departments from search.controller.js to here
     // Departments contain all departments and is the data returned to client
     var departments = [
         {
@@ -98,7 +135,6 @@ app.get("/departments", function (req, res) {
         }
     ];
 
-    // TODO: 10.3 Return the departments information as a json object
     // Return departments as a json object
     res.json(200, departments);
 });

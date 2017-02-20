@@ -75,4 +75,17 @@
         </div>
 
     </form>
+
+    <!--Handles status messages-->
+    <div class="alert" role="alert" alert-dismissable ng-show="ctrl.status.code"
+         ng-class="{'alert-success': ctrl.status.code == 0, 'alert-danger': ctrl.status.code != 0 }">
+
+        <button class="close" data-dismiss="alert">
+            <!-- data dismiss removes the element. This alert won't show up again before refreshing -->
+            &times;
+        </button>
+
+        <p>Error No: {{ ctrl.status.code + " " + ctrl.status.message }}</p>
+
+    </div>
 </div>
