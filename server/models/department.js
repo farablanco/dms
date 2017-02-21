@@ -1,5 +1,8 @@
 // TODO: 3.1 Deifine departments table model
 //Model for departments table
+// References:
+// http://docs.sequelizejs.com/en/latest/docs/getting-started/#your-first-model
+// http://docs.sequelizejs.com/en/latest/docs/models-definition/
 module.exports = function (sequelize, Sequelize) {
     var Department = sequelize.define("departments",
         {
@@ -15,12 +18,8 @@ module.exports = function (sequelize, Sequelize) {
         },
         {
             // don't add timestamps attributes updatedAt and createdAt
-            timestamps: false,
-            // disable the modification of table names; By default, sequelize will automatically
-            // transform all passed model names (first parameter of define) into plural.
-            // if you don't want that, set the following
-            freezeTableName: true
-        });
+            timestamps: false
+         });
 
     return Department;
 };

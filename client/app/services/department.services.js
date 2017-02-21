@@ -23,6 +23,8 @@
         // Exposed functions -------------------------------------------------------------------------------------------
         service.insertDept = insertDept;
         service.retrieveDept = retrieveDept;
+        service.retrieveDeptDB = retrieveDeptDB;
+        service.retrieveDeptManager = retrieveDeptManager;
 
         // Function declaration and definition -------------------------------------------------------------------------
 
@@ -32,7 +34,8 @@
             // This line returns the $http to the calling function
             // This configuration specifies that $http must send the department data received from the calling function
             // to the /departments route using the HTTP POST method. $http returns a promise object. In this instance
-            // the promise object is returned to the calling function
+            // the promise object is returned to the calling function\
+
             return $http({
                 method: 'POST'
                 , url: 'departments'
@@ -41,11 +44,35 @@
         }
 
         // retrieveDept retrieves department information from the server via HTTP GET.
-        // Parameters: none. Returns: Promise object
+        // Parameters: None. Returns: Promise object
         function retrieveDept(){
             return $http({
                 method: 'GET'
                 , url: 'departments'
+            });
+        }
+
+        // retrieveDept retrieves department information from the server via HTTP GET.
+        // Parameters: searchString. Returns: Promise object
+        function retrieveDeptDB(searchString){
+            return $http({
+                method: 'GET'
+                , url: 'departmentsDB'
+                , params: {
+                    'searchString': searchString
+                }
+            });
+        }
+
+        // retrieveDeptManager retrieves department information from the server via HTTP GET.
+        // Parameters: searchString. Returns: Promise object
+        function retrieveDeptManager(searchString){
+            return $http({
+                method: 'GET'
+                , url: 'deptManagers'
+                , params: {
+                    'searchString': searchString
+                }
             });
         }
     }
