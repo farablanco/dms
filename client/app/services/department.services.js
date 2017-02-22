@@ -26,15 +26,16 @@
         service.retrieveDeptDB = retrieveDeptDB;
         service.retrieveDeptByID = retrieveDeptByID;
         service.retrieveDeptManager = retrieveDeptManager;
+        service.saveDept = saveDept;
 
         // Function declaration and definition -------------------------------------------------------------------------
 
         // deleteDept uses HTTP DELETE to delete department from database; passes information as route parameters.
         // IMPORTANT! Route parameters are not the same as query strings!
-        function deleteDept(deptNo, managerID) {
+        function deleteDept(dept_no, emp_no) {
             return $http({
                 method: 'DELETE'
-                , url: 'deptManagers/' + deptNo + "/" + managerID
+                , url: 'api/deptManagers/' + dept_no + "/" + emp_no
             });
 
         }
@@ -49,7 +50,7 @@
 
             return $http({
                 method: 'POST'
-                , url: 'departments'
+                , url: 'api/departments'
                 , data: {dept: department}
             });
         }
@@ -59,16 +60,16 @@
         function retrieveDept() {
             return $http({
                 method: 'GET'
-                , url: 'departments'
+                , url: 'api/departments'
             });
         }
 
         // retrieveDeptByID retrieves department information from the server via HTTP GET. Passes information as a
         // route parameter
-        function retrieveDeptByID(deptNo) {
+        function retrieveDeptByID(dept_no) {
             return $http({
                 method: 'GET'
-                , url: "departments/" + deptNo
+                , url: "api/departments/" + dept_no
             });
         }
 
@@ -78,7 +79,7 @@
         function retrieveDeptDB(searchString) {
             return $http({
                 method: 'GET'
-                , url: 'departmentsDB'
+                , url: 'api/departmentsDB'
                 , params: {
                     'searchString': searchString
                 }
@@ -90,7 +91,7 @@
         function retrieveDeptManager(searchString) {
             return $http({
                 method: 'GET'
-                , url: 'deptManagers'
+                , url: 'api/deptManagers'
                 , params: {
                     'searchString': searchString
                 }
@@ -99,13 +100,13 @@
 
         // saveDept uses HTTP PUT to delete department from database; passes information as route parameters and via
         // HTTP HEADER BODY IMPORTANT! Route parameters are not the same as query strings!
-        function saveDept(deptNo, deptName) {
+        function saveDept(dept_no, dept_name) {
             return $http({
                 method: 'PUT'
-                , url: 'departments' + deptNo
+                , url: 'api/departments/' + dept_no
                 , data: {
-                    dept_no: vm.result.deptNo,
-                    dept_name: vm.result.deptName
+                    dept_no: dept_no,
+                    dept_name: dept_name
                 }
             });
         }

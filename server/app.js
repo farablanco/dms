@@ -77,7 +77,7 @@ app.use(bodyParser.json());
 // ROUTE HANDLERS -----------------------------------------------------------------------------------------------------
 
 // Defines endpoint handler exposed to client side for registration
-app.post("/departments", function (req, res) {
+app.post("/api/departments", function (req, res) {
     // Information sent via an HTTP POST is found in req.body
     console.log('\nData Submitted');
     console.log('Dept No: ' + req.body.dept.id);
@@ -105,7 +105,7 @@ app.post("/departments", function (req, res) {
 
 
 // Defines endpoint handler exposed to client side for retrieving all department information (static)
-app.get("/departments", function (req, res) {
+app.get("/api/departments", function (req, res) {
 
     // Departments contain all departments and is the data returned to client
     var departments = [
@@ -145,7 +145,7 @@ app.get("/departments", function (req, res) {
 
 
 // Defines endpoint handler exposed to client side for retrieving department information from database
-app.get("/departmentsDB", function (req, res) {
+app.get("/api/departmentsDB", function (req, res) {
     Department
     // findAll asks sequelize to search
         .findAll({
@@ -175,7 +175,7 @@ app.get("/departmentsDB", function (req, res) {
 // Defines endpoint handler exposed to client side for retrieving department records that match query string passed.
 // Match against dept name and dept no. Includes manager information. Client side sent data as part of the query
 // string, we access query string paramters via the req.query property
-app.get("/deptManagers", function (req, res) {
+app.get("/api/deptManagers", function (req, res) {
     Department
     // Use findAll to retrieve multiple records
         .findAll({
@@ -224,7 +224,7 @@ app.get("/deptManagers", function (req, res) {
 
 // -- Searches for and deletes manager of a specific department.
 // Client sent data as route parameters, we access route parameters (named routes) via the req.params property
-app.delete("/deptManagers/:dept_no/:emp_no", function (req, res) {
+app.delete("/api/deptManagers/:dept_no/:emp_no", function (req, res) {
     var where = {};
     where.dept_no = req.params.dept_no;
     where.emp_no = req.params.emp_no;
