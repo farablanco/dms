@@ -103,49 +103,8 @@ app.post("/api/departments", function (req, res) {
         });
 });
 
-
-// Defines endpoint handler exposed to client side for retrieving all department information (static)
-app.get("/api/departments", function (req, res) {
-
-    // Departments contain all departments and is the data returned to client
-    var departments = [
-        {
-            deptNo: 1001,
-            deptName: 'Admin'
-        }
-        , {
-            deptNo: 1002,
-            deptName: 'Finance'
-        }
-        , {
-            deptNo: 1003,
-            deptName: 'Sales'
-        }
-        , {
-            deptNo: 1004,
-            deptName: 'HR'
-        }
-        , {
-            deptNo: 1005,
-            deptName: 'Staff'
-        }
-        , {
-            deptNo: 1006,
-            deptName: 'Customer Care'
-        }
-        , {
-            deptNo: 1007,
-            deptName: 'Support'
-        }
-    ];
-
-    // Return departments as a json object
-    res.status(200).json(departments);
-});
-
-
 // Defines endpoint handler exposed to client side for retrieving department information from database
-app.get("/api/departmentsDB", function (req, res) {
+app.get("/api/departments", function (req, res) {
     Department
     // findAll asks sequelize to search
         .findAll({
@@ -175,7 +134,7 @@ app.get("/api/departmentsDB", function (req, res) {
 // Defines endpoint handler exposed to client side for retrieving department records that match query string passed.
 // Match against dept name and dept no. Includes manager information. Client side sent data as part of the query
 // string, we access query string paramters via the req.query property
-app.get("/api/deptManagers", function (req, res) {
+app.get("/api/departments/managers", function (req, res) {
     Department
     // Use findAll to retrieve multiple records
         .findAll({
@@ -222,40 +181,17 @@ app.get("/api/deptManagers", function (req, res) {
 });
 
 
-// -- Searches for and deletes manager of a specific department.
-// Client sent data as route parameters, we access route parameters (named routes) via the req.params property
-app.delete("/api/deptManagers/:dept_no/:emp_no", function (req, res) {
-    var where = {};
-    where.dept_no = req.params.dept_no;
-    where.emp_no = req.params.emp_no;
-
-    // The dept_manager table's primary key is a composite of dept_no and emp_no
-    // We will use these to find our manager. It is important to include dept_no because an employee maybe a
-    // manager of 2 or more departments. Even if business logic doesn't support this, always search
-    // a table and delete rows of a table based on the defined primary keys
-    Manager
-        .destroy({
-            where: where
-        })
-        .then(function (result) {
-            if (result == "1")
-                res.json({success: true});
-            else
-                res.json({success: false});
-        })
-        .catch(function (err) {
-            console.log("-- DELETE /api/managers/:dept_no/:emp_no catch(): \n" + JSON.stringify(err));
-        });
-});
-
-
 // -- Searches for specific department by dept_no
+// NOTE: I't important that this is not defined before /api/departments/managers; the route "managers" would be treated
+// as dept_no otherwise
 app.get("/api/departments/:dept_no", function (req, res) {
+    console.log
     var where = {};
     if (req.params.dept_no) {
         where.dept_no = req.params.dept_no
     }
 
+    console.log("where " + where);
     // We use findOne because we know (by looking at the database schema) that dept_no is the primary key and
     // is therefore unique. We cannot use findById because findById does not support eager loading
     Department
@@ -292,6 +228,8 @@ app.get("/api/departments/:dept_no", function (req, res) {
         });
 
 });
+
+
 // -- Updates department info
 app.put('/api/departments/:dept_no', function (req, res) {
     var where = {};
@@ -311,6 +249,71 @@ app.put('/api/departments/:dept_no', function (req, res) {
             console.log("-- PUT /api/departments/:dept_no department.update catch(): \n"
                 + JSON.stringify(err));
         });
+});
+
+// -- Searches for and deletes manager of a specific department.
+// Client sent data as route parameters, we access route parameters (named routes) via the req.params property
+app.delete("/api/departments/:dept_no/managers/:emp_no", function (req, res) {
+    var where = {};
+    where.dept_no = req.params.dept_no;
+    where.emp_no = req.params.emp_no;
+
+    // The dept_manager table's primary key is a composite of dept_no and emp_no
+    // We will use these to find our manager. It is important to include dept_no because an employee maybe a
+    // manager of 2 or more departments. Even if business logic doesn't support this, always search
+    // a table and delete rows of a table based on the defined primary keys
+    Manager
+        .destroy({
+            where: where
+        })
+        .then(function (result) {
+            if (result == "1")
+                res.json({success: true});
+            else
+                res.json({success: false});
+        })
+        .catch(function (err) {
+            console.log("-- DELETE /api/managers/:dept_no/:emp_no catch(): \n" + JSON.stringify(err));
+        });
+});
+
+
+// Defines endpoint handler exposed to client side for retrieving all department information (static)
+app.get("/api/static/departments", function (req, res) {
+    // Departments contain all departments and is the data returned to client
+    var departments = [
+        {
+            deptNo: 1001,
+            deptName: 'Admin'
+        }
+        , {
+            deptNo: 1002,
+            deptName: 'Finance'
+        }
+        , {
+            deptNo: 1003,
+            deptName: 'Sales'
+        }
+        , {
+            deptNo: 1004,
+            deptName: 'HR'
+        }
+        , {
+            deptNo: 1005,
+            deptName: 'Staff'
+        }
+        , {
+            deptNo: 1006,
+            deptName: 'Customer Care'
+        }
+        , {
+            deptNo: 1007,
+            deptName: 'Support'
+        }
+    ];
+
+    // Return departments as a json object
+    res.status(200).json(departments);
 });
 
 

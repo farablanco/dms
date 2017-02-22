@@ -35,7 +35,7 @@
         function deleteDept(dept_no, emp_no) {
             return $http({
                 method: 'DELETE'
-                , url: 'api/deptManagers/' + dept_no + "/" + emp_no
+                , url: 'api/departments/' + dept_no + "/managers/" + emp_no
             });
 
         }
@@ -60,7 +60,20 @@
         function retrieveDept() {
             return $http({
                 method: 'GET'
+                , url: 'api/static/departments'
+            });
+        }
+
+
+        // retrieveDept retrieves department information from the server via HTTP GET. Passes information via the query
+        // string (params) Parameters: searchString. Returns: Promise object
+        function retrieveDeptDB(searchString) {
+            return $http({
+                method: 'GET'
                 , url: 'api/departments'
+                , params: {
+                    'searchString': searchString
+                }
             });
         }
 
@@ -73,25 +86,12 @@
             });
         }
 
-
-        // retrieveDept retrieves department information from the server via HTTP GET. Passes information via the query
-        // string (params) Parameters: searchString. Returns: Promise object
-        function retrieveDeptDB(searchString) {
-            return $http({
-                method: 'GET'
-                , url: 'api/departmentsDB'
-                , params: {
-                    'searchString': searchString
-                }
-            });
-        }
-
         // retrieveDeptManager retrieves department information from the server via HTTP GET.
         // Parameters: searchString. Returns: Promise object
         function retrieveDeptManager(searchString) {
             return $http({
                 method: 'GET'
-                , url: 'api/deptManagers'
+                , url: 'api/departments/managers'
                 , params: {
                     'searchString': searchString
                 }
