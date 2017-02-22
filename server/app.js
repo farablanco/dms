@@ -1,11 +1,4 @@
-// TODO: Insert and retrieve data to / from MySQL DB
-// TODO: 1. Install and load sequelize; install but do not load mysql
-// TODO: 2. Set up MySQL connection
-// TODO: 3. Define and load models
-// TODO: 4. Persist registration information
-// TODO: 5. Retrieve department information based on queryString passed. Match queryString to both department name
-// TODO: 5. department number
-// TODO: 6. Perform eager loading so that the returned data includes the department manager id and name
+// TODO: Search(specific), Update, Delete
 
 
 // DEPENDENCIES ------------------------------------------------------------------------------------------------------
@@ -18,7 +11,6 @@ var path = require("path");
 // Loads bodyParser to populate and parse the body property of the request object
 var bodyParser = require("body-parser");
 
-// TODO: 1.1 Load sequelize, assign it to a variable called Sequelize
 // Loads sequelize ORM
 var Sequelize = require("sequelize");
 
@@ -32,7 +24,6 @@ const NODE_PORT = process.env.NODE_PORT || 8080;
 const CLIENT_FOLDER = path.join(__dirname + '/../client');  // CLIENT FOLDER is the public directory
 const MSG_FOLDER = path.join(CLIENT_FOLDER + '/assets/messages');
 
-// TODO: 2.1 Define MYSQL constants
 // Defines MySQL configuration
 const MYSQL_USERNAME = 'root';
 const MYSQL_PASSWORD = 'root';
@@ -42,7 +33,6 @@ const MYSQL_PASSWORD = 'root';
 var app = express();
 
 // DBs, MODELS, and ASSOCIATIONS ---------------------------------------------------------------------------------------
-//TODO :2.2 Create a connection with mysql DB
 // Creates a MySQL connection
 var sequelize = new Sequelize(
     'employees',
@@ -60,15 +50,11 @@ var sequelize = new Sequelize(
     }
 );
 
-//TODO :3.2 Load Department model
 // Loads model for department table
 var Department = require('./models/department')(sequelize, Sequelize);
-//TODO: 6.2 Load Employee and DeptManager model
 var Employee = require('./models/employee')(sequelize, Sequelize);
 var Manager = require('./models/deptmanager')(sequelize, Sequelize);
 
-// TODO: 6.3 Define relationship between Department and DeptManager, and between DeptManager and Employee
-// TODO: 6.3 This is to allow eager loading (getting related information from different tables)
 // Associations. Reference: https://dev.mysql.com/doc/employee/en/sakila-structure.html
 // Link Department model to DeptManager model through the dept_no FK. This relationship is 1-to-N and so we use hasMany
 // Link DeptManager model to Employee model through the emp_no FK. This relationship is N-to-1 and so we use hasOne
@@ -97,7 +83,6 @@ app.post("/departments", function (req, res) {
     console.log('Dept No: ' + req.body.dept.id);
     console.log('Dept Name: ' + req.body.dept.name);
 
-    // TODO: 4.1 Persist registration information
     Department
         .create({
             dept_no: req.body.dept.id,
@@ -158,11 +143,11 @@ app.get("/departments", function (req, res) {
     res.status(200).json(departments);
 });
 
-// TODO: 5.1 Retrieve all department records that match query string passed. Match against dept name and dept no
+
 // Defines endpoint handler exposed to client side for retrieving department information from database
 app.get("/departmentsDB", function (req, res) {
     Department
-        // findAll asks sequelize to search
+    // findAll asks sequelize to search
         .findAll({
             where: {
                 // This where condition filters the findAll result so that it only includes department names and
@@ -175,13 +160,11 @@ app.get("/departmentsDB", function (req, res) {
             }
         })
         .then(function (departments) {
-            console.log("departmentsDB then clause");
             res
                 .status(200)
                 .json(departments);
         })
         .catch(function (err) {
-            console.log("departmentsDB error clause: " + err);
             res
                 .status(500)
                 .json(err);
@@ -189,11 +172,12 @@ app.get("/departmentsDB", function (req, res) {
 });
 
 
-// TODO: 6.4 Retrieve department records that match query string passed. Match against dept name and dept no. Include
-// TODO: 6.4 manager information
+// Defines endpoint handler exposed to client side for retrieving department records that match query string passed.
+// Match against dept name and dept no. Includes manager information. Client side sent data as part of the query
+// string, we access query string paramters via the req.query property
 app.get("/deptManagers", function (req, res) {
     Department
-        // Use findAll to retrieve multiple records
+    // Use findAll to retrieve multiple records
         .findAll({
             // Use the where clause to filter final result; e.g., when you only want to retrieve departments that have
             // "s" in its name
@@ -234,6 +218,98 @@ app.get("/deptManagers", function (req, res) {
             res
                 .status(500)
                 .json(err);
+        });
+});
+
+
+// -- Searches for and deletes manager of a specific department.
+// Client sent data as route parameters, we access route parameters (named routes) via the req.params property
+app.delete("/deptManagers/:dept_no/:emp_no", function (req, res) {
+    var where = {};
+    where.dept_no = req.params.dept_no;
+    where.emp_no = req.params.emp_no;
+
+    // The dept_manager table's primary key is a composite of dept_no and emp_no
+    // We will use these to find our manager. It is important to include dept_no because an employee maybe a
+    // manager of 2 or more departments. Even if business logic doesn't support this, always search
+    // a table and delete rows of a table based on the defined primary keys
+    Manager
+        .destroy({
+            where: where
+        })
+        .then(function (result) {
+            if (result == "1")
+                res.json({success: true});
+            else
+                res.json({success: false});
+        })
+        .catch(function (err) {
+            console.log("-- DELETE /api/managers/:dept_no/:emp_no catch(): \n" + JSON.stringify(err));
+        });
+});
+
+
+// -- Searches for specific department by dept_no
+app.get("/api/departments/:dept_no", function (req, res) {
+    var where = {};
+    if (req.params.dept_no) {
+        where.dept_no = req.params.dept_no
+    }
+
+    // We use findOne because we know (by looking at the database schema) that dept_no is the primary key and
+    // is therefore unique. We cannot use findById because findById does not support eager loading
+    Department
+        .findOne({
+            where: where
+            // What Include attribute does: Join two or more tables. In this instance:
+            // 1. For every Department record that matches the where condition, the include attribute returns
+            // ALL employees that have served as managers of said Department
+            // 2. model attribute specifies which model to join with primary model
+            // 3. order attribute specifies that the list of Managers be ordered from latest to earliest manager
+            // 4. limit attribute specifies that only 1 record (in this case the latest manager) should be returned
+            , include: [{
+                model: Manager
+                , order: [["to_date", "DESC"]]
+                , limit: 1
+                // We include the Employee model to get the manager's name
+                , include: [Employee]
+            }]
+        })
+        // this .then() handles successful findAll operation
+        // in this example, findAll() used the callback function to return departments
+        // we named it departments, but this object also contains info about the
+        // latest manager of that department
+        .then(function (departments) {
+            console.log("-- GET /api/departments/:dept_no findOne then() result \n " + JSON.stringify(departments));
+            res.json(departments);
+        })
+        // this .catch() handles erroneous findAll operation
+        .catch(function (err) {
+            console.log("-- GET /api/departments/:dept_no findOne catch() \n " + JSON.stringify(departments));
+            res
+                .status(500)
+                .json({error: true});
+        });
+
+});
+// -- Updates department info
+app.put('/api/departments/:dept_no', function (req, res) {
+    var where = {};
+    where.dept_no = req.params.dept_no;
+
+    // Updates department detail
+    Department
+        .update(
+            {dept_name: req.body.dept_name}             // assign new values
+            , {where: where}                            // search condition / criteria
+        )
+        .then(function (response) {
+            console.log("-- PUT /api/departments/:dept_no department.update then(): \n"
+                + JSON.stringify(response));
+        })
+        .catch(function (err) {
+            console.log("-- PUT /api/departments/:dept_no department.update catch(): \n"
+                + JSON.stringify(err));
         });
 });
 
