@@ -1,3 +1,8 @@
+<!--TODO: Add ability to choose manager when registering a department. An existing manager shouldn't be
+TODO: allowed on the list. Saving of department in departments table and of manager in dept_managers table should be 1
+TODO: transaction (i.e., atomic) -->
+<!-- TODO: 1. Allow users to choose a manager from a list of employees -->
+
 <!--The ng-controller directive tells Angular the scope of the controller-->
 <!--In this case, the RegCtrl is given the scope of the <div> element where it is called-->
 <!--We then use RegCtrl (as ctrl) to manipulate elements within this <div>-->
@@ -55,6 +60,24 @@
             <div class="help-block" ng-messages="regForm.deptName.$error" ng-if="regForm.deptName.$touched">
                 <p ng-message="required">Department Name Required</p>
                 <p ng-message="minlength">Department Name Too Short</p>
+            </div>
+        </div>
+
+        <!--TODO: 1.1 Add dropdown box. Display first name and last name, but bind emp_no to model.-->
+        <!--Dropdown box for list of employees-->
+        <div class="form-group"
+             ng-class="{ 'has-error': regForm.deptManager.$touched && regForm.deptManager.$invalid }">
+            <label for="deptManager">Manager:</label>
+            <!-- In this select box, ng-options displays select box value as employee.first_name +
+            employee.last_name, however the value that is bound to the model (ctrl.department.manager)
+             is the employee.emp_no -->
+            <select id="deptManager" name="deptManager" class="form-control"
+                    ng-options="employee.emp_no as employee.first_name + ' ' + employee.last_name
+                    for employee in ctrl.employees"
+                    ng-model="ctrl.department.manager" required>
+            </select>
+            <div class="help-block" ng-messages="regForm.deptManager.$error" ng-if="regForm.deptManager.$touched">
+                <p ng-message="required">Department Manager Required</p>
             </div>
         </div>
 

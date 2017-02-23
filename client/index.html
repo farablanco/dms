@@ -1,5 +1,7 @@
-<!--TODO: Search(specific), Update, Delete-->
-<!--TODO: 1. Embed edit html partial and load related files-->
+<!--TODO: Add ability to choose manager when registering a department. An existing manager shouldn't be-->
+<!--TODO: allowed on the list. Saving of department in departments table and of manager in dept_managers table should be 1-->
+<!--TODO: transaction (i.e., atomic)-->
+<!--TODO: 5. Load EmpService's JS file -->
 <!DOCTYPE html>
 <!-- By using the ng-app directive, <html> is designated as the root element of the AngularJS application (in this
 case, the DMS module) -->
@@ -19,7 +21,6 @@ case, the DMS module) -->
 <body>
 
 <!-- Sets navigation bar classes -->
-<!--TODO 1.1 Add Edit to the navbar and tab panes-->
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -86,11 +87,13 @@ case, the DMS module) -->
 <!--Load angular-animate-->
 <script src="bower_components/angular-animate/angular-animate.min.js"></script>
 
-<!--TODO 1.2 Load js scripts related to edit functionality-->
 <!--Custom Scripts ------------------------------------------------------------------------------------------------>
 <!--Loads the js file that contains the DMS module definition-->
 <script src="app/app.js"></script>
-<!--Loads the js file that contains the SearchCtrl controller definition-->
+<!--TODO 5.1: Load EmpService's JS file-->
+<!--Loads the js file that contains the EmpService controller definition-->
+<script src="app/services/employee.services.js"></script>
+<!--Loads the js file that contains the DeptService controller definition-->
 <script src="app/services/department.services.js"></script>
 <!--Loads the js file that contains the RegCtrl controller definition-->
 <script src="app/registration/register.controller.js"></script>

@@ -24,9 +24,9 @@
         // Exposed functions can be called from the view.
         vm.deleteManager = deleteManager;
         vm.initDetails = initDetails;
-        vm.save = save;
         vm.search = search;
         vm.toggleEditor = toggleEditor;
+        vm.updateDeptName = updateDeptName;
 
 
         // Initializations --------------------------------------------------------------------------------------------
@@ -65,10 +65,10 @@
         }
 
         // Saves edited department name
-        function save() {
+        function updateDeptName() {
             console.log("-- show.controller.js > save()");
             DeptService
-                .saveDept(vm.dept_no, vm.result.dept_name)
+                .updateDept(vm.dept_no, vm.result.dept_name)
                 .then(function (result) {
                     console.log("-- show.controller.js > save() > results: \n" + JSON.stringify(result.data));
                 })

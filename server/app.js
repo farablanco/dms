@@ -1,5 +1,11 @@
-// TODO: Search(specific), Update, Delete
+// TODO: Add ability to choose manager when registering a department. An existing manager shouldn't be
+// TODO: allowed on the list. Saving of department in departments table and of manager in dept_managers table should be
+// TODO: one  transaction (i.e., atomic)
 
+// TODO: 4. Add route that would handle retrieval of employees that are not managers and would return first name, last
+// TODO: name, and emp no to client
+// TODO: 6. Update POST api/departments route to include insertion of new department and its manager into the
+// TODO: 6. dept_manager table
 
 // DEPENDENCIES ------------------------------------------------------------------------------------------------------
 // Loads express module and assigns it to a var called express
@@ -83,24 +89,70 @@ app.post("/api/departments", function (req, res) {
     console.log('Dept No: ' + req.body.dept.id);
     console.log('Dept Name: ' + req.body.dept.name);
 
-    Department
-        .create({
-            dept_no: req.body.dept.id,
-            dept_name: req.body.dept.name
+    // TODO: 6.1 Comment out current create statement. Do not delete so that you could refer to it in the future
+    /* // This statement creates a record in the departments table. We are commenting this out becuase of a new
+     // requirement where when a record is created in departments, an equivalent record must be written in dept_manager
+     // Keeping this for future reference
+     Department
+     .create({
+     dept_no: req.body.dept.id,
+     dept_name: req.body.dept.name
+     })
+     .then(function (department) {
+     console.log(department.get({plain: true}));
+     res
+     .status(200)
+     .json(department);
+     })
+     .catch(function (err) {
+     console.log("error: " + err);
+     res
+     .status(500)
+     .json(err);
+
+     });
+     */
+
+    // TODO: 6.2 Create a transaction (atomic operation) where department record is created only when an equivalent
+    // TODO: 6.2 dept_manager record is created
+    // This demonstrates how transactions (i.e., atomic operations) are performed. In this sample, a department record
+    // is created only when an equivalent dept_manager record is created
+    // sequelize.transaction is a managed transaction (i.e., handles rollback automatically)
+    sequelize
+        .transaction(function (t) {
+            return Department
+                .create(
+                    {
+                        dept_no: req.body.dept.id
+                        , dept_name: req.body.dept.name
+                    }
+                    , {transaction: t})
+                .then(function (department) {
+                    console.log("inner result " + JSON.stringify(department))
+                    return Manager
+                        .create(
+                            {
+                                dept_no: req.body.dept.id
+                                , emp_no: req.body.dept.manager
+                                , from_date: req.body.dept.from_date
+                                , to_date: req.body.dept.to_date
+                            }
+                            , {transaction: t});
+                });
         })
-        .then(function (department) {
-            console.log(department.get({plain: true}));
+        .then(function (results) {
             res
                 .status(200)
-                .json(department);
+                .json(results);
         })
         .catch(function (err) {
-            console.log("error: " + err);
+            console.log("outer error: " + JSON.stringify(err));
             res
                 .status(500)
                 .json(err);
-
         });
+
+
 });
 
 // Defines endpoint handler exposed to client side for retrieving department information from database
@@ -314,6 +366,49 @@ app.get("/api/static/departments", function (req, res) {
 
     // Return departments as a json object
     res.status(200).json(departments);
+});
+
+// Defines endpoint handler exposed to client side for retrieving employees that are non-managers. Duet to large number
+// of records in the employees database, this function limits the number of records retrieved
+app.get("/api/employees", function (req, res) {
+    // There are cases where sequelize is not robust enough to handle certain SQL queries. Sequelize has the mechanism
+    // that allows queries to be written in native SQL. In this case, we're writing in SQL because currently Sequelize
+    // doesn't have an equivalent for WHERE NOT EXISTS
+
+    // Explanation of SQL statement
+    // 1. SELECT - SELECT specifies that this is a read/retrieve command
+    // 2. emp_no, ... - identifies the columns to return; use * to return all columns
+    // 3. FROM employees - specifies the table to read data from
+    // 4. e - specifies a shorthand for the preceding table; this is optional
+    // 5. WHERE - signals that subsequent statement is a condition
+    // 6. NOT EXISTS - a subquery specifying that for a record from mainTable to be selected, it must not exist in
+    // subTable; in our case, we use this subquery to ensure that we get only those employees that are currently not
+    // managers
+    // 7. (SELECT ...) - this is the subquery where we apply the NOT EXISTS clause; composition is explained as above;
+    // the WHERE clause checks whether a record from the employee table exists in the dept_manager table
+    // 8. LIMIT - limits the number of records returned; we limit to 100 because employees table is too big
+    sequelize
+        .query("SELECT emp_no, first_name, last_name " +
+            "FROM employees e " +
+            "WHERE NOT EXISTS " +
+            "(SELECT * " +
+            "FROM dept_manager dm " +
+            "WHERE dm.emp_no = e.emp_no )" +
+            "LIMIT 100; "
+        )
+        // this .spread() handles successful native query operation
+        // we use .spread instead of .then so as to separate metadata from the emplooyee records
+        .spread(function (employees) {
+            res
+                .status(200)
+                .json(employees);
+        })
+        // this .catch() handles erroneous native query operation
+        .catch(function (err) {
+            res
+                .status(500)
+                .json(err);
+        });
 });
 
 

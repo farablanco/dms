@@ -18,17 +18,18 @@
         // and register.controller.js
         var service = this;
 
-        // Exposed data models -----------------------------------------------------------------------------------------
-        // Exposed functions -------------------------------------------------------------------------------------------
+        // EXPOSED DATA MODELS -----------------------------------------------------------------------------------------
+        // EXPOSED FUNCTIONS -------------------------------------------------------------------------------------------
         service.deleteDept = deleteDept;
         service.insertDept = insertDept;
         service.retrieveDept = retrieveDept;
         service.retrieveDeptDB = retrieveDeptDB;
         service.retrieveDeptByID = retrieveDeptByID;
         service.retrieveDeptManager = retrieveDeptManager;
-        service.saveDept = saveDept;
+        service.updateDept = updateDept;
 
-        // Function declaration and definition -------------------------------------------------------------------------
+
+        // FUNCTION DECLARATION AND DEFINITION -------------------------------------------------------------------------
 
         // deleteDept uses HTTP DELETE to delete department from database; passes information as route parameters.
         // IMPORTANT! Route parameters are not the same as query strings!
@@ -64,8 +65,7 @@
             });
         }
 
-
-        // retrieveDept retrieves department information from the server via HTTP GET. Passes information via the query
+        // retrieveDeptDB retrieves department information from the server via HTTP GET. Passes information via the query
         // string (params) Parameters: searchString. Returns: Promise object
         function retrieveDeptDB(searchString) {
             return $http({
@@ -98,9 +98,9 @@
             });
         }
 
-        // saveDept uses HTTP PUT to delete department from database; passes information as route parameters and via
+        // updateDept uses HTTP PUT to update department name saved in DB; passes information as route parameters and via
         // HTTP HEADER BODY IMPORTANT! Route parameters are not the same as query strings!
-        function saveDept(dept_no, dept_name) {
+        function updateDept(dept_no, dept_name) {
             return $http({
                 method: 'PUT'
                 , url: 'api/departments/' + dept_no
